@@ -1,0 +1,11 @@
+{
+  "product": "KB-GIFTJAR",
+  "version": "1.4.3.6",
+  "downloadUrl": "https://github.com/Khabeo2610/kb-giftjar-updates/releases/download/v1.4.3.6/KB-GIFTJAR-v1.4.3.6-Khabeo-Update-Portable-x64-FINAL.zip",
+  "sha256": "B3B5A6BCC07A8C8A8F7B174373FD49CFEF032FE2EC539FFC72458305F235E93A",
+  "size": 67675888,
+  "publishedUtc": "2026-07-25T03:38:04.2895932\u002B00:00",
+  "mandatory": false,
+  "notes": "KB GIFTJAR 1.4.3.6\n- Chuy\u1EC3n m\u00E1y ch\u1EE7 c\u1EADp nh\u1EADt sang GitHub ch\u00EDnh ch\u1EE7 Khabeo2610.\n- D\u00F9ng c\u1ED5ng ri\u00EAng 19808/22113, ch\u1EA1y \u0111\u1ED3ng th\u1EDDi v\u1EDBi TikFinity.\n- Gi\u1EEF nguy\u00EAn key v\u00E0 c\u1EA5u h\u00ECnh c\u1EE7a kh\u00E1ch.",
+  "signature": "oIgLreXzDqM09keIm6fTfdztkDY7h7r2HnQxFk1qHvnm4k1VvzHpWZmJUmlWxFwf_5OOtWpiTmXZcUNIs_3xWw"
+}
