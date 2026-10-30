@@ -11,9 +11,10 @@ function VideoSurface({ voice }: { voice: Voice }) {
   const host = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = voice.element;
-    host.current?.appendChild(el);
+    const container = host.current;
+    container?.appendChild(el);
     return () => {
-      if (el.parentElement === host.current) el.remove();
+      if (container && el.parentElement === container) el.remove();
     };
   }, [voice.element]);
   return <div ref={host} className="h-[72px] w-[128px] shrink-0 overflow-hidden rounded-xl bg-black" />;

@@ -22,7 +22,9 @@ import {
 } from 'lucide-react';
 import type { ProfileKind } from '@kb/shared-types';
 import { isTauri, invoke } from '@tauri-apps/api/core';
-import { useActiveProfile, useAppStore, useWorkspace, STORAGE_KEY, CORRUPT_BACKUP_KEY } from '../../store/appStore';
+import { useActiveProfile, useAppStore, useWorkspace } from '../../store/appStore';
+import { describeStorage, resetAllData } from '../../persistence/persistence';
+import { LoadingState } from '../../components/ui/states';
 import { PROFILE_KIND_LABELS } from '../../data/defaults';
 import { screenById } from '../../data/screens';
 import { Badge, Button, Card, Field, IconButton, Kbd, PageHeader, Select, Slider, Switch, TextInput } from '../../components/ui/primitives';
@@ -560,9 +562,7 @@ function SecurityPanel() {
               variant="danger"
               disabled={typed.trim().toUpperCase() !== 'XOA'}
               onClick={() => {
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.removeItem(CORRUPT_BACKUP_KEY);
-                window.location.reload();
+                void resetAllData().then(() => window.location.reload());
               }}
             >
               Xoá và khởi động lại
@@ -581,16 +581,24 @@ function SecurityPanel() {
 
 function About() {
   const [native, setNative] = useState<{ version: string; os: string; arch: string } | null>(null);
+  const [storage, setStorage] = useState<string | null>(null);
   useEffect(() => {
+    void describeStorage()
+      .then(setStorage)
+      .catch((e: unknown) => setStorage(`Không đọc được: ${String(e)}`));
     if (!isTauri()) return;
     invoke<{ version: string; os: string; arch: string }>('app_info')
       .then(setNative)
       .catch(() => setNative(null));
   }, []);
+  if (storage === null) return <LoadingState title="Đang đọc thông tin…" />;
   return (
     <div className="flex flex-col gap-1 py-2">
       <Row title="Sản phẩm">KB Studio Pro — Sweet Pastel Edition</Row>
-      <Row title="Phiên bản giao diện">0.1.0 (giai đoạn 1–2, bản demo)</Row>
+      <Row title="Phiên bản">0.2.0 (Sprint 1, bản demo)</Row>
+      <Row title="Lưu cấu hình tại">
+        <span className="max-w-md text-right text-xs break-all text-muted">{storage}</span>
+      </Row>
       <Row title="Môi trường">
         {native ? `Desktop · ${native.os} ${native.arch} · lõi ${native.version}` : isTauri() ? 'Desktop' : 'Trình duyệt (chế độ xem thử)'}
       </Row>

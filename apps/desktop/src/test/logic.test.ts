@@ -41,11 +41,6 @@ describe('Store: hoàn tác / làm lại', () => {
     });
     expect(old.media[0]!.name).not.toBe('Đổi tên');
   });
-
-  it('tự động lưu vào localStorage', () => {
-    useAppStore.getState().updateSettings({ displayName: 'Kha' });
-    expect(localStorage.getItem('kb-studio-pro:v1')).toContain('"displayName":"Kha"');
-  });
 });
 
 describe('Store: profile', () => {
@@ -84,6 +79,18 @@ describe('Kiểm tra dữ liệu đã lưu', () => {
     expect(
       validatePersisted({ settings: s.settings, profiles: s.profiles, activeProfileId: s.activeProfileId, workspaces: s.workspaces }),
     ).not.toBeNull();
+  });
+
+  it('dữ liệu bản cũ chưa có sidebarCollapsed vẫn hợp lệ (nhận mặc định)', () => {
+    const s = useAppStore.getState();
+    const { sidebarCollapsed: _omit, ...oldSettings } = s.settings;
+    const v = validatePersisted({
+      settings: oldSettings,
+      profiles: s.profiles,
+      activeProfileId: s.activeProfileId,
+      workspaces: s.workspaces,
+    });
+    expect(v?.settings.sidebarCollapsed).toBe(false);
   });
 
   it('từ chối dữ liệu hỏng', () => {

@@ -151,3 +151,44 @@ describe('Giao diện', () => {
     expect(within(screen.getByRole('listbox')).getAllByText('Hiệu ứng quà').length).toBeGreaterThan(0);
   });
 });
+
+describe('Sprint 1', () => {
+  it('thu gọn / mở rộng sidebar và nhớ trạng thái', async () => {
+    render(<App />);
+    await userEvent.click(screen.getByRole('button', { name: 'Thu gọn thanh bên' }));
+    expect(useAppStore.getState().settings.sidebarCollapsed).toBe(true);
+    // Ở chế độ thu gọn vẫn điều hướng được bằng icon.
+    await userEvent.click(within(nav()).getByRole('button', { name: 'Stream Deck' }));
+    expect(await screen.findByRole('heading', { level: 1, name: 'Stream Deck' })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Mở rộng thanh bên' }));
+    expect(useAppStore.getState().settings.sidebarCollapsed).toBe(false);
+  });
+
+  it('xoá quy tắc cần xác nhận; bấm Huỷ thì không xoá', async () => {
+    render(<App />);
+    await go('Hiệu ứng quà');
+    const before = useAppStore.getState().workspaces.pf_default!.rules.length;
+    await userEvent.click(screen.getAllByRole('button', { name: 'Xoá' })[0]!);
+    const dialog = await screen.findByRole('dialog', { name: 'Xoá quy tắc?' });
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Huỷ' }));
+    expect(useAppStore.getState().workspaces.pf_default!.rules).toHaveLength(before);
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'Xoá' })[0]!);
+    await userEvent.click(within(await screen.findByRole('dialog', { name: 'Xoá quy tắc?' })).getByRole('button', { name: 'Xoá' }));
+    expect(useAppStore.getState().workspaces.pf_default!.rules).toHaveLength(before - 1);
+  });
+
+  it('tạo profile mới và đổi profile từ thanh trên', async () => {
+    render(<App />);
+    await go('Cài đặt');
+    await userEvent.click(screen.getByRole('tab', { name: /Profile & sao lưu/ }));
+    await userEvent.click(screen.getByRole('button', { name: 'Tạo profile' }));
+    const dialog = screen.getByRole('dialog', { name: 'Tạo profile mới' });
+    await userEvent.type(within(dialog).getByLabelText('Tên profile'), 'Bán hàng sáng');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Tạo' }));
+    const created = useAppStore.getState().profiles.find((p) => p.name === 'Bán hàng sáng')!;
+    expect(useAppStore.getState().activeProfileId).toBe(created.id);
+    await userEvent.selectOptions(screen.getByLabelText('Profile đang dùng'), 'pf_default');
+    expect(useAppStore.getState().activeProfileId).toBe('pf_default');
+  });
+});

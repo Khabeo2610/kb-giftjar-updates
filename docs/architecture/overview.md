@@ -15,13 +15,31 @@
 | Font | **Be Vietnam Pro** (đóng gói offline qua `@fontsource`) | Không phụ thuộc Google Fonts khi chạy. |
 | Test | **Vitest + Testing Library + jsdom**, `cargo test` | Chạy nhanh, cùng cấu hình Vite. |
 
-### Quyết định về cơ sở dữ liệu
+### Cơ sở dữ liệu (Sprint 1)
 
-Brief yêu cầu **SQLite** cục bộ. Ở giai đoạn 1–2, cấu hình được lưu bằng `localStorage` của WebView qua một lớp persist có kiểm tra schema (`apps/desktop/src/store/appStore.ts`).
-
-- **Lý do:** dữ liệu hiện tại nhỏ (vài trăm KB), cấu trúc dạng tài liệu; UI demo cần chạy được cả trong trình duyệt để xem thử.
-- **Kế hoạch (giai đoạn 3):** chuyển sang SQLite do Rust quản lý (`rusqlite` hoặc `tauri-plugin-sql`), có migration đánh số. Lớp `persist` sẽ được thay bằng storage adapter gọi lệnh Tauri; schema zod giữ nguyên để kiểm tra dữ liệu ở biên.
+- **SQLite** cục bộ do Rust quản lý (`rusqlite` 0.41, bản `bundled` — không phụ thuộc SQLite của hệ điều hành).
+- File: thư mục dữ liệu ứng dụng → Windows: `%APPDATA%\vn.kbstudio.pro\kb-studio.db`.
+- Chế độ WAL + `foreign_keys=ON`. Migration đánh số trong `apps/desktop/src-tauri/migrations/`, ghi vào bảng `schema_migrations`.
+- Bảng: `settings` (key → JSON, **key nằm trong whitelist** để không lưu nhầm mật khẩu/token), `profiles`, `media_metadata`, `stream_deck_layouts` (xoá profile → xoá dây chuyền media & deck).
+- Mỗi lần lưu là **một transaction** — lỗi giữa chừng sẽ rollback.
+- File DB hỏng khi khởi động → đổi tên thành `kb-studio.corrupt-<thời gian>.db` (giữ lại để cứu dữ liệu) và tạo DB mới, app báo cho người dùng.
+- Khi chạy trên trình duyệt (xem thử / test): dùng `localStorage` qua cùng interface `StorageBackend`.
 - **PostgreSQL** dành cho License Server (giai đoạn 6).
+
+### Phân tầng (Sprint 1)
+
+```
+UI (React components, features/*)          ← chỉ hiển thị & gọi action
+   │
+Domain (store/appStore.ts, packages/event-engine)  ← logic nghiệp vụ thuần, không biết lưu ở đâu
+   │
+Persistence (src/persistence/*)             ← nạp/kiểm tra/lưu (debounce 400ms, flush khi đóng cửa sổ)
+   │
+StorageBackend: sqliteBackend ──invoke──▶ Rust (src-tauri/src/db.rs) ──▶ SQLite
+                browserBackend / memoryBackend (test)
+```
+
+Interface chuẩn bị cho sprint sau (chưa kết nối thật): `packages/media-engine` (`MediaEngine`), `packages/obs-integration` (`ObsClient`, `NotConnectedObsClient`), `packages/event-engine` (`EventSourceAdapter`, `MockEventSource`, `backoffDelay`).
 
 ## 2. Cấu trúc monorepo
 
@@ -75,7 +93,8 @@ Event Source (Mock / Test / Provider thật ở GĐ 4)
 
 - Mọi chỉnh sửa workspace đi qua `commit(label, recipe)` → lưu ảnh chụp trước đó (tối đa 50 bước) → `undo()/redo()`.
 - Lịch sử gắn với profile hiện tại; đổi profile thì xoá lịch sử để tránh hoàn tác nhầm.
-- Persist tự ghi sau mỗi thay đổi. Dữ liệu hỏng khi nạp → sao lưu sang khoá `kb-studio-pro:corrupt-backup` và khởi động bằng cấu hình mặc định (không crash).
+- Tầng persistence lưu sau 400ms kể từ thay đổi cuối; khi bấm nút đóng cửa sổ, app ghi nốt rồi mới thoát.
+- Khởi động: màn hình chờ → nạp → kiểm tra zod → vào app. Dữ liệu hỏng → dùng mặc định + cảnh báo, **không ghi đè** cho tới khi người dùng thay đổi. Lỗi đọc → màn hình lỗi có "Thử lại" / "Mở tạm, không lưu".
 
 ## 6. Cách ly lỗi
 

@@ -164,4 +164,5 @@ export interface AppSettings {
   lowPerformanceMode: boolean;
   masterVolume: number;
   onboardingDone: boolean;
+  sidebarCollapsed: boolean;
 }

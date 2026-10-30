@@ -13,7 +13,9 @@
 | File profile độc hại (chia sẻ trên mạng) chèn script / đường dẫn | Kiểm tra bằng zod: giới hạn độ dài, số lượng, giới hạn 5 MB; `fileName` cấm `\`, `/`, `..`; tên icon chỉ cho phép `[A-Za-z0-9]` và tra bảng có sẵn; luôn cấp ID profile mới | Fuzz test schema |
 | XSS từ tên người xem / bình luận | React tự escape; không dùng `dangerouslySetInnerHTML`; CSP chặn script ngoài | Kiểm tra lại khi làm Overlay Browser Source |
 | Macro chạy lệnh hệ thống | Macro chỉ gồm hành động nội bộ (discriminated union), không có kiểu "chạy lệnh" | Giữ nguyên nguyên tắc khi thêm plugin |
-| Lệnh Tauri bị lạm dụng | Capability tối thiểu: `core:default` + `set-always-on-top`; chỉ 1 lệnh `app_info` chỉ đọc | Review mỗi lệnh mới; validate input phía Rust |
+| Lệnh Tauri bị lạm dụng | Lệnh ứng dụng khai báo tường minh trong `build.rs` (AppManifest) và cấp từng quyền `allow-*`; capability core chỉ thêm `set-always-on-top` và `destroy` (đóng cửa sổ sau khi lưu). `storage_save` kiểm tra lại dữ liệu phía Rust | Review mỗi lệnh mới |
+| Lưu nhầm secret vào DB | Bảng `settings` chỉ nhận key trong whitelist (test: từ chối `obsPassword`); không có cột nào chứa mật khẩu/token | Secret ở sprint sau → Windows Credential Manager |
+| DB bị sửa tay / hỏng | Ràng buộc CHECK trong schema (tên file không chứa đường dẫn, giới hạn độ dài, JSON hợp lệ), transaction + rollback, DB hỏng được sao lưu rồi tạo mới; frontend kiểm tra lại bằng zod khi nạp | — |
 | Dữ liệu cấu hình hỏng làm treo app | Kiểm tra khi nạp; dữ liệu hỏng được sao lưu riêng, app khởi động bằng mặc định | — |
 | Quá tải khi nhiều quà cùng lúc (DoS cục bộ) | Hàng đợi giới hạn 50, chống trùng, cooldown, giới hạn hiệu ứng & âm thanh đồng thời | Rate limit theo nguồn sự kiện (GĐ 4) |
 | Lộ secret trong mã nguồn | Không có secret nào trong repo; `.env*` bị gitignore | Thêm secret scanning trong CI |

@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { GiftRule } from '@kb/shared-types';
 import {
   BoundedPriorityQueue,
+  MockEventSource,
+  backoffDelay,
   Deduplicator,
   createTestEvent,
   emptyRuleEngineState,
@@ -145,5 +147,31 @@ describe('Deduplicator', () => {
     const d = new Deduplicator(1_000_000, 3);
     for (let i = 0; i < 10; i++) d.accept(`id${i}`, i);
     expect(d.size).toBe(3);
+  });
+});
+
+describe('Event adapter', () => {
+  it('backoff tăng dần và có giới hạn', () => {
+    const mid = () => 0.5;
+    expect(backoffDelay(1, 1000, 30_000, mid)).toBe(750);
+    expect(backoffDelay(3, 1000, 30_000, mid)).toBe(3000);
+    expect(backoffDelay(20, 1000, 30_000, mid)).toBe(22_500);
+  });
+
+  it('MockEventSource phát sự kiện khi chạy và dừng khi stop', async () => {
+    vi.useFakeTimers();
+    const src = new MockEventSource(100, () => createTestEvent('like'));
+    const got: string[] = [];
+    const statuses: string[] = [];
+    src.onEvent((e) => got.push(e.type));
+    src.onStatus((s) => statuses.push(s.status));
+    await src.start();
+    vi.advanceTimersByTime(350);
+    await src.stop();
+    vi.advanceTimersByTime(500);
+    expect(got).toEqual(['like', 'like', 'like']);
+    expect(statuses).toEqual(['live', 'stopped']);
+    expect(src.isMock).toBe(true);
+    vi.useRealTimers();
   });
 });

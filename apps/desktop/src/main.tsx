@@ -6,10 +6,10 @@ import '@fontsource/be-vietnam-pro/600.css';
 import '@fontsource/be-vietnam-pro/700.css';
 import '@fontsource/be-vietnam-pro/800.css';
 import './styles.css';
-import { App } from './App';
+import { AppGate } from './AppGate';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <AppGate />
   </StrictMode>,
 );

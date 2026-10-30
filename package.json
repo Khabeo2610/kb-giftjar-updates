@@ -9,8 +9,18 @@
     "build": "pnpm -r --if-present build",
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
-    "check": "pnpm typecheck && pnpm test && pnpm build",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
     "tauri": "pnpm --filter @kb/desktop tauri",
-    "format": "prettier --write \"apps/desktop/src/**/*.{ts,tsx,css}\" \"packages/*/src/**/*.{ts,css}\""
-  }
+    "format": "prettier --write \"apps/desktop/src/**/*.{ts,tsx,css}\" \"packages/*/src/**/*.{ts,css}\"",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "9.39.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "^17.13.0",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "8.72.1"
+  },
+  "type": "module"
 }

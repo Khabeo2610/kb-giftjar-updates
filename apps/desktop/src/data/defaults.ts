@@ -190,4 +190,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
   lowPerformanceMode: false,
   masterVolume: 0.9,
   onboardingDone: false,
+  sidebarCollapsed: false,
 };

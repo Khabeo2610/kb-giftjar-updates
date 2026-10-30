@@ -1,3 +1,4 @@
+import { confirmAction } from '../../components/ui/ConfirmDialog';
 import { useState } from 'react';
 import { ArrowDown, ArrowUp, Copy, FlaskConical, Pencil, Plus, Send, Trash2, Zap } from 'lucide-react';
 import type { GiftRule } from '@kb/shared-types';
@@ -131,7 +132,14 @@ export function GiftStudioScreen() {
                   </IconButton>
                   <IconButton
                     label="Xoá"
-                    onClick={() => {
+                    onClick={async () => {
+                      const ok = await confirmAction({
+                        title: 'Xoá quy tắc?',
+                        message: `Quy tắc “${r.name}” sẽ bị xoá. Bạn có thể hoàn tác ngay sau đó.`,
+                        confirmLabel: 'Xoá',
+                        danger: true,
+                      });
+                      if (!ok) return;
                       commit(`Xoá quy tắc "${r.name}"`, (w) => {
                         w.rules = w.rules.filter((x) => x.id !== r.id);
                       });

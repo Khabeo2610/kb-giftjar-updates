@@ -1,3 +1,4 @@
+import { confirmAction } from '../../components/ui/ConfirmDialog';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FolderPlus, Link2, ListMusic, Music, Pencil, Play, Plus, Search, Shuffle, Square, Trash2, Upload, Video } from 'lucide-react';
 import type { MediaItem, PastelColor } from '@kb/shared-types';
@@ -151,7 +152,14 @@ export function MediaCenterScreen() {
     }
   };
 
-  const remove = (m: MediaItem) => {
+  const remove = async (m: MediaItem) => {
+    const ok = await confirmAction({
+      title: 'Xoá media khỏi thư viện?',
+      message: `“${m.name}” sẽ bị xoá khỏi thư viện. File gốc trên máy KHÔNG bị xoá. Bạn có thể hoàn tác ngay sau đó.`,
+      confirmLabel: 'Xoá',
+      danger: true,
+    });
+    if (!ok) return;
     stopMedia(m.id);
     commit(`Xoá "${m.name}"`, (w) => {
       w.media = w.media.filter((x) => x.id !== m.id);
@@ -175,9 +183,16 @@ export function MediaCenterScreen() {
     setGroupModal(null);
   };
 
-  const deleteGroup = (id: string) => {
+  const deleteGroup = async (id: string) => {
     const g = ws.groups.find((x) => x.id === id);
     if (!g || g.builtIn) return;
+    const ok = await confirmAction({
+      title: `Xoá nhóm “${g.name}”?`,
+      message: `Media trong nhóm sẽ được chuyển sang nhóm “${ws.groups[0]!.name}”, không bị xoá.`,
+      confirmLabel: 'Xoá nhóm',
+      danger: true,
+    });
+    if (!ok) return;
     const fallback = ws.groups[0]!.id;
     commit(`Xoá nhóm "${g.name}"`, (w) => {
       w.groups = w.groups.filter((x) => x.id !== id);
@@ -349,7 +364,7 @@ export function MediaCenterScreen() {
 
           {groupId !== 'all' && !ws.groups.find((g) => g.id === groupId)?.builtIn && (
             <div className="flex justify-end">
-              <Button size="sm" variant="danger" icon={<Trash2 size={14} />} onClick={() => deleteGroup(groupId)}>
+              <Button size="sm" variant="danger" icon={<Trash2 size={14} />} onClick={() => void deleteGroup(groupId)}>
                 Xoá nhóm này
               </Button>
             </div>
@@ -432,7 +447,7 @@ export function MediaCenterScreen() {
                       <IconButton label={`Sửa ${m.name}`} onClick={() => setEditing(m)}>
                         <Pencil size={16} />
                       </IconButton>
-                      <IconButton label={`Xoá ${m.name}`} onClick={() => remove(m)}>
+                      <IconButton label={`Xoá ${m.name}`} onClick={() => void remove(m)}>
                         <Trash2 size={16} />
                       </IconButton>
                     </li>

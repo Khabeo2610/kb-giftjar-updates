@@ -1,3 +1,4 @@
+import { confirmAction } from '../../components/ui/ConfirmDialog';
 import { useState } from 'react';
 import { PanelTopOpen, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { DeckButton } from '@kb/shared-types';
@@ -47,8 +48,15 @@ export function StreamDeckScreen() {
     notify({ tone: 'success', message: 'Đã lưu nút.', undoable: true });
   };
 
-  const deleteButton = (id: string) => {
+  const deleteButton = async (id: string) => {
     const label = deck.buttons[id]?.label ?? '';
+    const ok = await confirmAction({
+      title: 'Xoá nút?',
+      message: `Nút “${label}” sẽ bị xoá khỏi mọi trang.`,
+      confirmLabel: 'Xoá nút',
+      danger: true,
+    });
+    if (!ok) return;
     commit(`Xoá nút "${label}"`, (w) => {
       w.deck.pages.forEach((p) => {
         p.slots = p.slots.map((s) => (s === id ? null : s));
@@ -74,8 +82,15 @@ export function StreamDeckScreen() {
     setPageModal(null);
   };
 
-  const deletePage = () => {
+  const deletePage = async () => {
     if (deck.pages.length <= 1) return notify({ tone: 'warning', message: 'Cần giữ lại ít nhất một trang.' });
+    const ok = await confirmAction({
+      title: `Xoá trang “${page.name}”?`,
+      message: 'Các nút chỉ nằm ở trang này cũng sẽ bị xoá. Bạn có thể hoàn tác ngay sau đó.',
+      confirmLabel: 'Xoá trang',
+      danger: true,
+    });
+    if (!ok) return;
     commit(`Xoá trang "${page.name}"`, (w) => {
       w.deck.pages = w.deck.pages.filter((p) => p.id !== page.id);
       w.deck = pruneOrphanButtons(w.deck);
@@ -129,7 +144,7 @@ export function StreamDeckScreen() {
             <IconButton label="Đổi tên trang" onClick={() => setPageModal({ id: page.id, name: page.name })}>
               <Pencil size={16} />
             </IconButton>
-            <IconButton label="Xoá trang" onClick={deletePage}>
+            <IconButton label="Xoá trang" onClick={() => void deletePage()}>
               <Trash2 size={16} />
             </IconButton>
             <div className="ml-auto flex items-center gap-2 text-sm">
@@ -247,7 +262,7 @@ export function StreamDeckScreen() {
         button={editing?.button ?? null}
         onClose={() => setEditing(null)}
         onSave={(b) => editing && saveButton(b, editing.slot)}
-        onDelete={deleteButton}
+        onDelete={(id) => void deleteButton(id)}
       />
 
       <Modal

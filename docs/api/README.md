@@ -4,7 +4,14 @@
 
 | Lệnh | Tham số | Trả về | Ghi chú |
 |---|---|---|---|
-| `app_info` | — | `{ version: string, os: string, arch: string }` | Chỉ đọc. Dùng ở Cài đặt → Thông tin phần mềm. |
+| `app_info` | — | `{ version, os, arch }` | Chỉ đọc. Cài đặt → Thông tin phần mềm. |
+| `storage_load` | — | `{ snapshot: Snapshot \| null, warning: string \| null }` | `null` = chưa từng lưu. `warning` khi DB hỏng đã được sao lưu. |
+| `storage_save` | `{ snapshot: Snapshot }` | — | Ghi toàn bộ trong 1 transaction. Từ chối key cài đặt ngoài whitelist, profile đang chọn không tồn tại, dữ liệu quá lớn. |
+| `storage_info` | — | `{ path, schemaVersion }` | Đường dẫn file DB và phiên bản schema. |
+
+`Snapshot` = `{ settings, profiles, activeProfileId, workspaces }` — cùng hình dạng phần dữ liệu lưu của store (`PersistedSlice` trong `apps/desktop/src/store/appStore.ts`).
+
+Mỗi lệnh phải được khai báo trong `src-tauri/build.rs` **và** cấp quyền trong `src-tauri/capabilities/default.json` (`allow-<tên-lệnh>`); lệnh không được cấp quyền sẽ bị chặn.
 
 ## Định dạng file profile (`.kbprofile.json`)
 

@@ -37,7 +37,9 @@
 ## C. Kiểm tra code
 
 ```powershell
-pnpm check     # typecheck + test + build
+pnpm check     # typecheck + lint + test + build
+cd apps\desktop\src-tauri
+cargo test     # test SQLite + migration
 ```
 
 ## D. Thử nhanh các chức năng (3 phút)
@@ -60,3 +62,5 @@ pnpm check     # typecheck + test + build
 | "Cần gắn lại file" sau khi mở lại app | Giới hạn của bản demo — bấm 🔗 để gắn lại. Giai đoạn 3 sẽ tự nhớ file. |
 | "Định dạng/codec chưa được hỗ trợ" | Chuyển file sang MP4 (H.264 + AAC) hoặc MP3. |
 | `tauri build` báo thiếu `link.exe` | Chưa cài C++ Build Tools (bước B.2). |
+| Màn hình "Chưa mở được dữ liệu cấu hình" | Bấm **Thử lại**. Nếu vẫn lỗi: đóng app, mở `%APPDATA%\vn.kbstudio.pro`, gửi file `kb-studio.db` cho KB Studio để kiểm tra; bấm **Mở tạm, không lưu** để dùng tạm. |
+| Muốn reset sạch cấu hình | Cài đặt → Bảo mật & dữ liệu → Xoá dữ liệu (hoặc xoá thư mục `%APPDATA%\vn.kbstudio.pro` khi app đang tắt). |

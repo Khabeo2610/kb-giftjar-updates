@@ -9,7 +9,7 @@ Kênh phát hành và cập nhật chính thức cho KB GIFTJAR
 
 *Your Lovely LIVE Control Center* — phần mềm Windows hỗ trợ creator, idol TikTok, streamer và agency. Chủ sở hữu: **KB Studio**.
 
-**Trạng thái hiện tại: Giai đoạn 1–2 (Foundation + Sweet Pastel UI) — bản DEMO, chưa sẵn sàng thương mại.**
+**Trạng thái hiện tại: Sprint 1 (v0.2.0) — bản DEMO, chưa sẵn sàng thương mại.** Cấu hình lưu bằng SQLite.
 Chưa kết nối TikTok LIVE, chưa kết nối OBS, chưa có hệ thống license. Xem chi tiết: [docs/architecture/module-status.md](docs/architecture/module-status.md).
 
 ## Chạy nhanh
@@ -18,8 +18,11 @@ Chưa kết nối TikTok LIVE, chưa kết nối OBS, chưa có hệ thống lic
 pnpm install
 pnpm dev            # giao diện tại http://127.0.0.1:1420
 pnpm tauri dev      # bản desktop (cần Rust + WebView2)
-pnpm check          # typecheck + test + build
+pnpm check          # typecheck + lint + test + build
+pnpm tauri build    # tạo bộ cài Windows (.exe NSIS + .msi) — chạy trên Windows
 ```
+
+Kết quả kiểm thử Sprint 1: [docs/test-reports/sprint-1.md](docs/test-reports/sprint-1.md) · Checklist nghiệm thu trên Windows: [docs/user-guide/windows-test-checklist.md](docs/user-guide/windows-test-checklist.md)
 
 Hướng dẫn từng bước cho người mới: [docs/user-guide/getting-started.md](docs/user-guide/getting-started.md)
 

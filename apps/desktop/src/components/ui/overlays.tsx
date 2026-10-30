@@ -24,13 +24,20 @@ export function Modal({
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // Giữ onClose mới nhất trong ref: effect chỉ chạy lại khi mở/đóng, không chạy lại mỗi lần render
+  // (nếu không, focus bị kéo ra/vào ô nhập sau mỗi phím gõ → chữ bị đảo lộn).
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.stopPropagation();
-        onClose();
+        onCloseRef.current();
       }
       // Giữ focus bên trong hộp thoại khi bấm Tab.
       if (e.key === 'Tab' && panelRef.current) {
@@ -57,7 +64,7 @@ export function Modal({
       window.removeEventListener('keydown', onKey, true);
       previouslyFocused?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   return (
     <AnimatePresence>

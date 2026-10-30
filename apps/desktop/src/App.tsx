@@ -9,6 +9,7 @@ import { Onboarding } from './components/layout/Onboarding';
 import { MiniController } from './components/layout/MiniController';
 import { ErrorBoundary } from './components/layout/ErrorBoundary';
 import { ToastViewport } from './components/ui/overlays';
+import { ConfirmDialogHost } from './components/ui/ConfirmDialog';
 import { DashboardScreen } from './features/dashboard/DashboardScreen';
 import { MediaCenterScreen } from './features/media/MediaCenterScreen';
 import { GiftStudioScreen } from './features/gifts/GiftStudioScreen';
@@ -68,6 +69,7 @@ export function App() {
       <MiniController />
       <SearchPalette />
       <Onboarding />
+      <ConfirmDialogHost />
       <ToastViewport />
     </MotionConfig>
   );

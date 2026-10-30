@@ -1,9 +1,10 @@
-import { CloudCheck, Moon, PanelTopOpen, Redo2, Search, Sun, Undo2 } from 'lucide-react';
+import { Moon, PanelTopOpen, Redo2, Search, Sun, Undo2 } from 'lucide-react';
 import { useActiveProfile, useAppStore } from '../../store/appStore';
 import { PROFILE_KIND_LABELS } from '../../data/defaults';
 import { Button, IconButton, Kbd, Select } from '../ui/primitives';
 import { cx } from '../../lib/cx';
 import { useResolvedTheme } from '../../lib/theme';
+import { SaveIndicator } from './SaveIndicator';
 
 export function Topbar() {
   const profiles = useAppStore((s) => s.profiles);
@@ -19,7 +20,6 @@ export function Topbar() {
   const setSearchOpen = useAppStore((s) => s.setSearchOpen);
   const miniOpen = useAppStore((s) => s.miniControllerOpen);
   const setMini = useAppStore((s) => s.setMiniControllerOpen);
-  const lastSavedAt = useAppStore((s) => s.lastSavedAt);
   const isDark = useResolvedTheme() === 'dark';
 
   return (
@@ -35,12 +35,7 @@ export function Topbar() {
       </button>
 
       <div className="ml-auto flex items-center gap-2">
-        <span
-          className="hidden items-center gap-1 whitespace-nowrap text-xs text-muted 2xl:inline-flex"
-          title="Mọi thay đổi được tự động lưu"
-        >
-          <CloudCheck size={15} aria-hidden /> {lastSavedAt ? 'Đã tự lưu' : 'Tự động lưu'}
-        </span>
+        <SaveIndicator />
         <IconButton
           label="Hoàn tác (Ctrl+Z)"
           disabled={!canUndo}

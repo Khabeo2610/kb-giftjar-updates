@@ -141,6 +141,8 @@ export const settingsSchema = z.object({
   lowPerformanceMode: z.boolean(),
   masterVolume: z.number().min(0).max(1),
   onboardingDone: z.boolean(),
+  // Thêm ở Sprint 1 — dữ liệu cũ chưa có trường này sẽ nhận giá trị mặc định.
+  sidebarCollapsed: z.boolean().default(false),
 });
 
 /** Định dạng file xuất profile (.kbprofile.json). */
