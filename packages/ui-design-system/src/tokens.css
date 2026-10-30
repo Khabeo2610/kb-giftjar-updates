@@ -1,0 +1,116 @@
+/*
+ * KB Studio Pro — Sweet Pastel Design Tokens
+ * Mọi màu, bo góc, bóng, thời gian animation đều lấy từ đây.
+ * Component KHÔNG được dùng mã màu cứng.
+ *
+ * Ghi chú tương phản (WCAG 2.1):
+ *  - text (#343044) trên bg (#FFF9F5): 12.2:1  ✔ AA/AAA
+ *  - text trên primary (#F4A9C7): 6.9:1        ✔ AA → nút chính dùng CHỮ TỐI, không dùng chữ trắng (chỉ 1.85:1)
+ *  - text-secondary gốc #777184 trên bg chỉ đạt 4.49:1 (thiếu 0.01 so với AA),
+ *    nên dùng #6E6880 (≈5.0:1) để đạt chuẩn mà vẫn giữ tông màu.
+ *  - accent-strong (#A8346A) dùng cho link/focus ring: 6.2:1 trên trắng.
+ */
+
+:root {
+  /* Brand palette — theo brief */
+  --kb-bg: #fff9f5;
+  --kb-surface: #ffffff;
+  --kb-surface-2: #fffcfa;
+  --kb-primary: #f4a9c7;
+  --kb-primary-hover: #ef97ba;
+  --kb-primary-soft: #ffd5e5;
+  --kb-lavender: #dcd1ff;
+  --kb-mint: #d6f3e8;
+  --kb-yellow: #fff0d9;
+  --kb-peach: #ffe0d1;
+  --kb-sky: #d5ebff;
+  --kb-text: #343044;
+  --kb-text-secondary: #6e6880;
+  --kb-border: #f0e3eb;
+  --kb-border-strong: #e5cfdc;
+  --kb-accent-strong: #a8346a;
+  --kb-on-primary: #343044;
+
+  /* Trạng thái */
+  --kb-success: #2f8a63;
+  --kb-success-soft: #d6f3e8;
+  --kb-warning: #9a6200;
+  --kb-warning-soft: #fff0d9;
+  --kb-danger: #c0364f;
+  --kb-danger-soft: #ffe1e6;
+  --kb-info: #5b4bc4;
+  --kb-info-soft: #e9e3ff;
+
+  /* Bo góc */
+  --kb-radius-sm: 10px;
+  --kb-radius-md: 14px;
+  --kb-radius-lg: 18px;
+  --kb-radius-xl: 20px;
+  --kb-radius-full: 999px;
+
+  /* Bóng nhẹ */
+  --kb-shadow-sm: 0 1px 2px rgba(52, 48, 68, 0.05), 0 1px 3px rgba(244, 169, 199, 0.12);
+  --kb-shadow-md: 0 4px 14px rgba(52, 48, 68, 0.06), 0 2px 6px rgba(244, 169, 199, 0.16);
+  --kb-shadow-lg: 0 16px 40px rgba(52, 48, 68, 0.12), 0 4px 12px rgba(244, 169, 199, 0.2);
+
+  /* Chuyển động 150–250ms */
+  --kb-duration-fast: 150ms;
+  --kb-duration-base: 200ms;
+  --kb-duration-slow: 250ms;
+  --kb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --kb-font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  color-scheme: light;
+}
+
+/* Dark mode — "Midnight Candy": nền tím than ấm, giữ điểm nhấn hồng pastel */
+:root[data-theme='dark'] {
+  --kb-bg: #1c1a24;
+  --kb-surface: #26232f;
+  --kb-surface-2: #2d2a37;
+  --kb-primary: #f4a9c7;
+  --kb-primary-hover: #f7bdd4;
+  --kb-primary-soft: #4a2f3e;
+  --kb-lavender: #3a3456;
+  --kb-mint: #24433a;
+  --kb-yellow: #4a3d26;
+  --kb-peach: #4a3229;
+  --kb-sky: #26394d;
+  --kb-text: #f6f1f7;
+  --kb-text-secondary: #bdb5c9;
+  --kb-border: #3a3545;
+  --kb-border-strong: #4c4659;
+  --kb-accent-strong: #ffb3d1;
+  --kb-on-primary: #2a1f2b;
+
+  --kb-success: #7fd9b0;
+  --kb-success-soft: #24433a;
+  --kb-warning: #ffcf7a;
+  --kb-warning-soft: #4a3d26;
+  --kb-danger: #ff98ab;
+  --kb-danger-soft: #4d2630;
+  --kb-info: #c4b8ff;
+  --kb-info-soft: #3a3456;
+
+  --kb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --kb-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --kb-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+}
+
+/* Giảm chuyển động: do người dùng bật trong app hoặc do hệ điều hành */
+:root[data-reduced-motion='true'] {
+  --kb-duration-fast: 0ms;
+  --kb-duration-base: 0ms;
+  --kb-duration-slow: 0ms;
+}
+:root[data-reduced-motion='true'] *,
+:root[data-reduced-motion='true'] *::before,
+:root[data-reduced-motion='true'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}

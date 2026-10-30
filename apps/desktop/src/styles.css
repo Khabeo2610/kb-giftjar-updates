@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+@import '@kb/ui-design-system/tokens.css';
+
+/* Dark mode điều khiển bằng thuộc tính data-theme (không theo class) */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* Đưa design tokens vào Tailwind để dùng như bg-surface, text-muted, rounded-card... */
+@theme inline {
+  --color-bg: var(--kb-bg);
+  --color-surface: var(--kb-surface);
+  --color-surface-2: var(--kb-surface-2);
+  --color-primary: var(--kb-primary);
+  --color-primary-hover: var(--kb-primary-hover);
+  --color-primary-soft: var(--kb-primary-soft);
+  --color-lavender: var(--kb-lavender);
+  --color-mint: var(--kb-mint);
+  --color-yellow: var(--kb-yellow);
+  --color-peach: var(--kb-peach);
+  --color-sky: var(--kb-sky);
+  --color-ink: var(--kb-text);
+  --color-muted: var(--kb-text-secondary);
+  --color-line: var(--kb-border);
+  --color-line-strong: var(--kb-border-strong);
+  --color-accent: var(--kb-accent-strong);
+  --color-on-primary: var(--kb-on-primary);
+  --color-success: var(--kb-success);
+  --color-success-soft: var(--kb-success-soft);
+  --color-warning: var(--kb-warning);
+  --color-warning-soft: var(--kb-warning-soft);
+  --color-danger: var(--kb-danger);
+  --color-danger-soft: var(--kb-danger-soft);
+  --color-info: var(--kb-info);
+  --color-info-soft: var(--kb-info-soft);
+
+  --radius-card: var(--kb-radius-xl);
+  --radius-control: var(--kb-radius-md);
+  --shadow-soft: var(--kb-shadow-sm);
+  --shadow-card: var(--kb-shadow-md);
+  --shadow-float: var(--kb-shadow-lg);
+  --font-sans: var(--kb-font);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--kb-bg);
+    color: var(--kb-text);
+    font-family: var(--kb-font);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable='true'] {
+    user-select: text;
+  }
+
+  /* Viền focus rõ ràng cho người dùng bàn phím */
+  :focus-visible {
+    outline: 3px solid var(--kb-accent-strong);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* Thanh cuộn mềm mại */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--kb-border-strong) transparent;
+  }
+
+  .kb-transition {
+    transition-property: background-color, border-color, color, box-shadow, transform, opacity;
+    transition-duration: var(--kb-duration-base);
+    transition-timing-function: var(--kb-ease);
+  }
+
+  /* Thanh trượt pastel: phần đã chọn tô hồng qua biến --fill */
+  input[type='range'] {
+    appearance: none;
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--kb-primary) var(--fill, 0%), var(--kb-border-strong) var(--fill, 0%));
+    cursor: pointer;
+  }
+  input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: var(--kb-surface);
+    border: 3px solid var(--kb-primary);
+    box-shadow: var(--kb-shadow-sm);
+  }
+  input[type='range']::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--kb-surface);
+    border: 3px solid var(--kb-primary);
+  }
+}
+
+@keyframes kb-float-up {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-160px) scale(1.15);
+    opacity: 0;
+  }
+}
+.kb-float-up {
+  animation: kb-float-up 1.6s var(--kb-ease) forwards;
+}
